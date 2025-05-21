@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dss.api_impl.mapper.ProductMapper">
+
+    <resultMap id="findAllProducts" type="com.dss.api.model.Product">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="available" column="available"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="categoryId" column="category_id"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="findAllProducts" parameterType="com.dss.api.filter.ProductFilter">
+        SELECT p.id, p.name, p.price, p.available, p.created_at
+        <if test="categoryPresent">
+            , p.category_id
+        </if>
+        FROM products p
+    </select>
+</mapper>
