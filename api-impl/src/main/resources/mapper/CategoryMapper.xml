@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dss.api_impl.mapper.CategoryMapper">
+
+    <select id="getAllProductsByCategory" resultType="com.dss.api.dto.ProductDTO" parameterType="java.lang.Long">
+        SELECT p.id, p.name, p.price, p.available, p.created_at, p.category_id, c.name AS category_name
+        FROM products p
+        JOIN categories c ON c.id = p.category_id
+        <where>
+            <if test="_parameter != null">
+                AND c.id = #{_parameter}
+            </if>
+        </where>
+        ORDER BY p.created_at DESC
+    </select>
+
+</mapper>

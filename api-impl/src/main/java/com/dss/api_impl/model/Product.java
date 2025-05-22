@@ -23,6 +23,8 @@ public class Product {
 
     private LocalDate createdAt;
 
-    private Long categoryId;
+    private Category category;
+
+//    private String categoryName;
 
 }

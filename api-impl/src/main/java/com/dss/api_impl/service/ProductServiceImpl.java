@@ -2,7 +2,6 @@ package com.dss.api_impl.service;
 
 import com.dss.api.dto.ProductDTO;
 import com.dss.api.filter.ProductFilter;
-import com.dss.api.model.Product;
 import com.dss.api.service.ProductService;
 import com.dss.api_impl.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAll(ProductFilter productFilter) {
+    public List<ProductDTO> getAll(ProductFilter productFilter) {
         return productMapper.findAll(productFilter);
     }
 }

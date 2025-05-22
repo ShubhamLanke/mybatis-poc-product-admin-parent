@@ -1,23 +1,49 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dss.api_impl.mapper.ProductMapper">
 
-    <resultMap id="findAllProducts" type="com.dss.api.model.Product">
+    <resultMap id="ProductResultMap" type="com.dss.api_impl.model.Product">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="price" column="price"/>
         <result property="available" column="available"/>
         <result property="createdAt" column="created_at"/>
-        <result property="categoryId" column="category_id"/>
+        <association property="category" javaType="com.dss.api_impl.model.Category" resultMap="CategoryResultMap"/>
     </resultMap>
 
-    <select id="findAll" resultMap="findAllProducts" parameterType="com.dss.api.filter.ProductFilter">
-        SELECT p.id, p.name, p.price, p.available, p.created_at
-        <if test="categoryPresent">
-            , p.category_id
+    <resultMap id="CategoryResultMap" type="com.dss.api_impl.model.Category">
+        <id property="id" column="category_id"/>
+        <result property="name" column="category_name"/>
+        <result property="description" column="category_description"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="ProductResultMap" parameterType="com.dss.api.filter.ProductFilter">
+        SELECT p.id, p.name, p.price, p.available, p.created_at, p.category_id
+        <if test="joinCategory">
+            , c.name as category_name, c.description as category_description
         </if>
         FROM products p
+        <if test="joinCategory">
+            JOIN categories c ON p.category_id = c.id
+        </if>
+        <where>
+            <if test="productIds != null and productIds.size() > 0">
+                AND p.id IN
+                <foreach item="id" collection="productIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="productNames != null and productNames.size() > 0">
+                AND p.name IN
+                <foreach item="name" collection="productNames" open="(" separator="," close=")">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="isAvailable != null">
+                AND p.available = #{isAvailable}
+            </if>
+        </where>
     </select>
 </mapper>
